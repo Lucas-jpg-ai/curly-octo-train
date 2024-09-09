@@ -5,6 +5,7 @@ professores = []
 turmas = []
 matriculas = []
 
+# Função para apresentar o Menu Principal
 def menu_principal():
     while True:
         print("\nMENU PRINCIPAL")
@@ -33,6 +34,7 @@ def menu_principal():
         else:
             print("Opção inválida. Tente novamente.")
 
+# Função para apresentar o Menu de Operações
 def menu_operacoes(tipo, lista):
     while True:
         print(f"\n[{tipo}] MENU DE OPERAÇÕES")
@@ -57,6 +59,7 @@ def menu_operacoes(tipo, lista):
         else:
             print("Opção inválida. Tente novamente.")
 
+# Função para incluir dados
 def incluir(lista, tipo):
     if tipo == "Estudantes":
         codigo = int(input("Informe o código do estudante: "))
@@ -70,6 +73,7 @@ def incluir(lista, tipo):
         lista.append(item)
         print(f"{tipo[:-1]} incluído(a) com sucesso!")
 
+# Função para listar dados
 def listar(lista, tipo):
     if not lista:
         print(f"Não há {tipo.lower()} cadastrados.")
@@ -83,6 +87,7 @@ def listar(lista, tipo):
             for i, item in enumerate(lista, 1):
                 print(f"{i}. {item}")
 
+# Função para atualizar dados
 def atualizar(lista, tipo):
     if tipo == "Estudantes":
         listar(lista, tipo)
@@ -106,6 +111,7 @@ def atualizar(lista, tipo):
             else:
                 print("Número inválido.")
 
+# Função para excluir dados
 def excluir(lista, tipo):
     if tipo == "Estudantes":
         listar(lista, tipo)
@@ -128,4 +134,5 @@ def excluir(lista, tipo):
                 print("Número inválido.")
 
 # Iniciar o programa
-menu_principal()
+if __name__ == "__main__":
+    menu_principal()
