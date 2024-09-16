@@ -1,4 +1,34 @@
-# Listas para armazenar os dados
+import json
+
+# Funções para manipulação de arquivos JSON
+def salvar_dados(nome_arquivo, dados):
+    with open(nome_arquivo, 'w') as arquivo:
+        json.dump(dados, arquivo)
+
+def carregar_dados(nome_arquivo):
+    try:
+        with open(nome_arquivo, 'r') as arquivo:
+            return json.load(arquivo)
+    except FileNotFoundError:
+        return []  # Retorna uma lista vazia se o arquivo não existir
+
+# Funções para gerenciar estudantes, disciplinas, professores, turmas e matrículas
+def carregar_todos_dados():
+    global estudantes, disciplinas, professores, turmas, matriculas
+    estudantes = carregar_dados("estudantes.json")
+    disciplinas = carregar_dados("disciplinas.json")
+    professores = carregar_dados("professores.json")
+    turmas = carregar_dados("turmas.json")
+    matriculas = carregar_dados("matriculas.json")
+
+def salvar_todos_dados():
+    salvar_dados("estudantes.json", estudantes)
+    salvar_dados("disciplinas.json", disciplinas)
+    salvar_dados("professores.json", professores)
+    salvar_dados("turmas.json", turmas)
+    salvar_dados("matriculas.json", matriculas)
+
+# Listas para armazenar os dados (agora carregados do arquivo)
 estudantes = []
 disciplinas = []
 professores = []
@@ -7,6 +37,7 @@ matriculas = []
 
 # Função para apresentar o Menu Principal
 def menu_principal():
+    carregar_todos_dados()  # Carrega os dados ao iniciar o programa
     while True:
         print("\nMENU PRINCIPAL")
         print("1. Estudantes")
@@ -19,23 +50,24 @@ def menu_principal():
         opcao = input("Informe a opção desejada: ")
 
         if opcao == '1':
-            menu_operacoes("Estudantes", estudantes)
+            menu_operacoes("Estudantes", estudantes, "estudantes.json")
         elif opcao == '2':
-            menu_operacoes("Disciplinas", disciplinas)
+            menu_operacoes("Disciplinas", disciplinas, "disciplinas.json")
         elif opcao == '3':
-            menu_operacoes("Professores", professores)
+            menu_operacoes("Professores", professores, "professores.json")
         elif opcao == '4':
-            menu_operacoes("Turmas", turmas)
+            menu_operacoes("Turmas", turmas, "turmas.json")
         elif opcao == '5':
-            menu_operacoes("Matrículas", matriculas)
+            menu_operacoes("Matrículas", matriculas, "matriculas.json")
         elif opcao == '6':
             print("Encerrando aplicação...")
+            salvar_todos_dados()  # Salva os dados ao sair
             break
         else:
             print("Opção inválida. Tente novamente.")
 
 # Função para apresentar o Menu de Operações
-def menu_operacoes(tipo, lista):
+def menu_operacoes(tipo, lista, nome_arquivo):
     while True:
         print(f"\n[{tipo}] MENU DE OPERAÇÕES")
         print("1. Incluir")
@@ -48,12 +80,15 @@ def menu_operacoes(tipo, lista):
 
         if opcao == '1':
             incluir(lista, tipo)
+            salvar_dados(nome_arquivo, lista)  # Salva ao incluir
         elif opcao == '2':
             listar(lista, tipo)
         elif opcao == '3':
             atualizar(lista, tipo)
+            salvar_dados(nome_arquivo, lista)  # Salva ao atualizar
         elif opcao == '4':
             excluir(lista, tipo)
+            salvar_dados(nome_arquivo, lista)  # Salva ao excluir
         elif opcao == '5':
             break  # Volta ao menu principal
         else:
