@@ -94,79 +94,92 @@ def menu_operacoes(tipo, lista, nome_arquivo):
         else:
             print("Opção inválida. Tente novamente.")
 
+# Função para validar códigos já existentes (não duplicados)
+def validar_codigo_existente(lista, codigo):
+    return any(item['codigo'] == codigo for item in lista)
+
 # Função para incluir dados
 def incluir(lista, tipo):
     if tipo == "Estudantes":
         codigo = int(input("Informe o código do estudante: "))
+        if validar_codigo_existente(lista, codigo):
+            print("Código já existente. Tente novamente.")
+            return
         nome = input("Informe o nome do estudante: ")
         cpf = input("Informe o CPF do estudante: ")
         estudante = {"codigo": codigo, "nome": nome, "cpf": cpf}
         lista.append(estudante)
         print("Estudante incluído(a) com sucesso!")
-    else:
-        item = input(f"Informe o novo {tipo[:-1]}: ")
-        lista.append(item)
-        print(f"{tipo[:-1]} incluído(a) com sucesso!")
+    elif tipo == "Disciplinas":
+        codigo = int(input("Informe o código da disciplina: "))
+        if validar_codigo_existente(lista, codigo):
+            print("Código já existente. Tente novamente.")
+            return
+        nome = input("Informe o nome da disciplina: ")
+        disciplina = {"codigo": codigo, "nome": nome}
+        lista.append(disciplina)
+        print("Disciplina incluída com sucesso!")
+    elif tipo == "Professores":
+        codigo = int(input("Informe o código do professor: "))
+        if validar_codigo_existente(lista, codigo):
+            print("Código já existente. Tente novamente.")
+            return
+        nome = input("Informe o nome do professor: ")
+        cpf = input("Informe o CPF do professor: ")
+        professor = {"codigo": codigo, "nome": nome, "cpf": cpf}
+        lista.append(professor)
+        print("Professor incluído com sucesso!")
+    elif tipo == "Turmas":
+        codigo = int(input("Informe o código da turma: "))
+        if validar_codigo_existente(lista, codigo):
+            print("Código já existente. Tente novamente.")
+            return
+        cod_professor = int(input("Informe o código do professor: "))
+        cod_disciplina = int(input("Informe o código da disciplina: "))
+        turma = {"codigo": codigo, "cod_professor": cod_professor, "cod_disciplina": cod_disciplina}
+        lista.append(turma)
+        print("Turma incluída com sucesso!")
+    elif tipo == "Matrículas":
+        codigo_turma = int(input("Informe o código da turma: "))
+        codigo_estudante = int(input("Informe o código do estudante: "))
+        matricula = {"codigo_turma": codigo_turma, "codigo_estudante": codigo_estudante}
+        lista.append(matricula)
+        print("Matrícula incluída com sucesso!")
 
 # Função para listar dados
 def listar(lista, tipo):
     if not lista:
         print(f"Não há {tipo.lower()} cadastrados.")
     else:
-        if tipo == "Estudantes":
-            print(f"Lista de {tipo.lower()}:")
-            for estudante in lista:
-                print(f"Código: {estudante['codigo']}, Nome: {estudante['nome']}, CPF: {estudante['cpf']}")
-        else:
-            print(f"Lista de {tipo.lower()}:")
-            for i, item in enumerate(lista, 1):
-                print(f"{i}. {item}")
+        print(f"Lista de {tipo.lower()}:")
+        for item in lista:
+            print(item)
 
 # Função para atualizar dados
 def atualizar(lista, tipo):
-    if tipo == "Estudantes":
-        listar(lista, tipo)
-        if lista:
-            codigo = int(input("Informe o código do estudante que deseja atualizar: "))
-            for estudante in lista:
-                if estudante["codigo"] == codigo:
-                    estudante["nome"] = input("Informe o novo nome do estudante: ")
-                    estudante["cpf"] = input("Informe o novo CPF do estudante: ")
-                    print("Estudante atualizado(a) com sucesso!")
-                    return
-            print("Estudante não encontrado.")
-    else:
-        listar(lista, tipo)
-        if lista:
-            indice = int(input("Informe o número do item que deseja atualizar: ")) - 1
-            if 0 <= indice < len(lista):
-                novo_valor = input(f"Informe o novo valor para {tipo[:-1]}: ")
-                lista[indice] = novo_valor
+    listar(lista, tipo)
+    if lista:
+        codigo = int(input(f"Informe o código do {tipo[:-1]} que deseja atualizar: "))
+        for item in lista:
+            if item["codigo"] == codigo:
+                for chave in item:
+                    if chave != "codigo":
+                        item[chave] = input(f"Informe o novo valor para {chave}: ")
                 print(f"{tipo[:-1]} atualizado(a) com sucesso!")
-            else:
-                print("Número inválido.")
+                return
+        print(f"{tipo[:-1]} não encontrado(a).")
 
 # Função para excluir dados
 def excluir(lista, tipo):
-    if tipo == "Estudantes":
-        listar(lista, tipo)
-        if lista:
-            codigo = int(input("Informe o código do estudante que deseja excluir: "))
-            for estudante in lista:
-                if estudante["codigo"] == codigo:
-                    lista.remove(estudante)
-                    print("Estudante excluído(a) com sucesso!")
-                    return
-            print("Estudante não encontrado.")
-    else:
-        listar(lista, tipo)
-        if lista:
-            indice = int(input("Informe o número do item que deseja excluir: ")) - 1
-            if 0 <= indice < len(lista):
-                excluido = lista.pop(indice)
-                print(f"{tipo[:-1]} '{excluido}' excluído(a) com sucesso!")
-            else:
-                print("Número inválido.")
+    listar(lista, tipo)
+    if lista:
+        codigo = int(input(f"Informe o código do {tipo[:-1]} que deseja excluir: "))
+        for item in lista:
+            if item["codigo"] == codigo:
+                lista.remove(item)
+                print(f"{tipo[:-1]} excluído(a) com sucesso!")
+                return
+        print(f"{tipo[:-1]} não encontrado(a).")
 
 # Iniciar o programa
 if __name__ == "__main__":
